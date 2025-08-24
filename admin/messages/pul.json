@@ -1,0 +1,43 @@
+{
+  "common": {
+    "loading": "Ina naataa...",
+    "save": "Danndu",
+    "cancel": "Haaytu",
+    "delete": "Momtu",
+    "edit": "Taago",
+    "view": "Yiilu",
+    "search": "Yuurno",
+    "filter": "Siiño",
+    "sort": "Nanndu",
+    "refresh": "Hesɗito",
+    "close": "Uddu",
+    "submit": "Neldee",
+    "reset": "Firtu",
+    "back": "Rutto",
+    "next": "Yeeso",
+    "previous": "Ɓakkaa",
+    "yes": "Eey",
+    "no": "Alaa"
+  },
+  "navigation": {
+    "dashboard": "Dokkuwal",
+    "contents": "Fiɓɓe",
+    "teachers": "Jangɓe",
+    "mosques": "Juulirɗe",
+    "users": "Huutorɓe",
+    "reports": "Jaŋte",
+    "donations": "Jaaɓɗe",
+    "settings": "Teeltol",
+    "logout": "Yaltu"
+  },
+  "dashboard": {
+    "title": "Dokkuwal",
+    "description": "Yiytere ɓurɗum platform ngam",
+    "totalContents": "Fiɓɓe kala",
+    "totalTeachers": "Jangɓe",
+    "totalMosques": "Juulirɗe",
+    "totalUsers": "Huutorɓe",
+    "recentActivity": "Gollal hesɗi",
+    "quickActions": "Gollal gaawe"
+  }
+}

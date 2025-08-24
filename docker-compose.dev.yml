@@ -1,0 +1,113 @@
+version: '3.8'
+
+# Development-specific overrides
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    environment:
+      SPRING_PROFILES_ACTIVE: development
+      DEBUG: true
+      LOG_LEVEL: debug
+    volumes:
+      - ./api/src:/app/src
+      - ./api/build:/app/build
+      - gradle_cache:/home/gradle/.gradle
+    ports:
+      - "5005:5005" # Debug port
+    command: ["./gradlew", "bootRun", "--args='--spring.profiles.active=development'"]
+
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile.dev
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:8080
+      WATCHPACK_POLLING: true
+    volumes:
+      - ./admin:/app
+      - /app/node_modules
+      - /app/.next
+    command: ["npm", "run", "dev"]
+
+  # Enable all development services
+  kibana:
+    profiles: []
+
+  # Hot reload for mobile development (optional)
+  mobile-dev:
+    build:
+      context: ./mobile
+      dockerfile: Dockerfile.dev
+    container_name: jangquranaksunna-mobile-dev
+    environment:
+      FLUTTER_WEB_PORT: 8081
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./mobile:/app
+      - flutter_cache:/home/flutter/.pub-cache
+    networks:
+      - jangquranaksunna-network
+    profiles:
+      - mobile-dev
+    command: ["flutter", "run", "-d", "web-server", "--web-hostname", "0.0.0.0", "--web-port", "8081"]
+
+  # Development database with sample data
+  postgres:
+    volumes:
+      - ./api/src/main/resources/db/migration:/docker-entrypoint-initdb.d
+      - ./api/src/main/resources/db/seed:/docker-entrypoint-seed.d
+
+  # MailHog for email testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: jangquranaksunna-mailhog
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # Web UI
+    networks:
+      - jangquranaksunna-network
+    restart: unless-stopped
+
+  # pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: jangquranaksunna-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@jangquranaksunna.org
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "8888:80"
+    depends_on:
+      - postgres
+    networks:
+      - jangquranaksunna-network
+    restart: unless-stopped
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+  # Redis Commander for Redis management
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: jangquranaksunna-redis-commander
+    environment:
+      REDIS_HOSTS: local:redis:6379:0:${REDIS_PASSWORD:-redis123}
+    ports:
+      - "8889:8081"
+    depends_on:
+      - redis
+    networks:
+      - jangquranaksunna-network
+    restart: unless-stopped
+
+volumes:
+  gradle_cache:
+    driver: local
+  flutter_cache:
+    driver: local
+  pgadmin_data:
+    driver: local

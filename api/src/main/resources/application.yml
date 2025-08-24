@@ -1,0 +1,294 @@
+spring:
+  application:
+    name: jangquranaksunna-api
+  
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:development}
+  
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/jangquranaksunna}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres123}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 20000
+      minimum-idle: 10
+      maximum-pool-size: 50
+      idle-timeout: 300000
+      max-lifetime: 1200000
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+  
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+  
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 50
+          max-wait: 2000ms
+          max-idle: 10
+          min-idle: 2
+    
+    elasticsearch:
+      repositories:
+        enabled: true
+      client:
+        reactive:
+          endpoints: ${ELASTICSEARCH_HOST:localhost}:${ELASTICSEARCH_PORT:9200}
+          use-ssl: false
+  
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:admin}
+    password: ${RABBITMQ_PASSWORD:admin123}
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1s
+  
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:your_google_client_id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:your_google_client_secret}
+            scope:
+              - openid
+              - profile
+              - email
+            redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://www.googleapis.com/oauth2/v4/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+  
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
+    username: ${SMTP_USERNAME:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+  
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE_MB:500}MB
+      max-request-size: ${MAX_FILE_SIZE_MB:500}MB
+  
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000
+
+# Application-specific configuration
+app:
+  jwt:
+    secret: ${JWT_SECRET:your_super_secret_jwt_key_minimum_32_characters_long}
+    expiration-ms: ${JWT_EXPIRATION_MS:900000}
+    refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:2592000000}
+  
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:3001}
+    allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+    allowed-headers: "*"
+    allow-credentials: true
+  
+  rate-limit:
+    requests-per-minute: ${RATE_LIMIT_REQUESTS_PER_MINUTE:60}
+    burst-capacity: 100
+  
+  storage:
+    type: minio
+    minio:
+      endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+      access-key: ${MINIO_ACCESS_KEY:minioadmin}
+      secret-key: ${MINIO_SECRET_KEY:minioadmin123}
+      bucket-name: ${MINIO_BUCKET_NAME:jangquranaksunna}
+      region: us-east-1
+  
+  content:
+    max-download-duration-days: ${MAX_DOWNLOAD_DURATION_DAYS:90}
+    max-downloads-per-user: ${MAX_DOWNLOADS_PER_USER:50}
+    enable-encryption: ${ENABLE_CONTENT_ENCRYPTION:true}
+    transcoding:
+      enabled: true
+      quality-levels:
+        - name: low
+          video-bitrate: 500k
+          audio-bitrate: 64k
+        - name: medium
+          video-bitrate: 1000k
+          audio-bitrate: 128k
+        - name: high
+          video-bitrate: 2000k
+          audio-bitrate: 256k
+  
+  features:
+    offline-downloads: ${ENABLE_OFFLINE_DOWNLOADS:true}
+    donations: ${ENABLE_DONATIONS:true}
+    youtube-import: ${ENABLE_YOUTUBE_IMPORT:true}
+    telegram-import: ${ENABLE_TELEGRAM_IMPORT:true}
+    live-streaming: ${ENABLE_LIVE_STREAMING:false}
+  
+  payments:
+    stripe:
+      public-key: ${STRIPE_PUBLIC_KEY:pk_test_example}
+      secret-key: ${STRIPE_SECRET_KEY:sk_test_example}
+      webhook-secret: ${STRIPE_WEBHOOK_SECRET:whsec_example}
+    paypal:
+      client-id: ${PAYPAL_CLIENT_ID:example}
+      client-secret: ${PAYPAL_CLIENT_SECRET:example}
+      mode: ${PAYPAL_MODE:sandbox}
+    orange-money:
+      api-key: ${ORANGE_MONEY_API_KEY:example}
+      secret: ${ORANGE_MONEY_SECRET:example}
+      merchant-id: ${ORANGE_MONEY_MERCHANT_ID:example}
+    wave:
+      api-key: ${WAVE_API_KEY:example}
+      secret: ${WAVE_SECRET:example}
+  
+  localization:
+    default-language: ${DEFAULT_LANGUAGE:fr}
+    supported-languages: ${SUPPORTED_LANGUAGES:fr,ar,wo,pul}
+    default-timezone: ${DEFAULT_TIMEZONE:Africa/Dakar}
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,flyway
+  endpoint:
+    health:
+      show-details: when_authorized
+      show-components: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.5, 0.9, 0.95, 0.99
+      sla:
+        http.server.requests: 10ms,50ms,100ms,200ms,500ms,1s,2s,5s,10s
+
+# Logging configuration
+logging:
+  level:
+    org.jangquranaksunna: ${LOG_LEVEL:INFO}
+    org.springframework.security: ${LOG_LEVEL:INFO}
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Server configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  compression:
+    enabled: true
+  http2:
+    enabled: true
+
+# OpenAPI Documentation
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+  info:
+    title: JangQuranAkSunna API
+    description: API pour la plateforme d'enseignement islamique
+    version: 1.0.0
+    contact:
+      name: JangQuranAkSunna Team
+      email: api@jangquranaksunna.org
+  servers:
+    - url: http://localhost:8080
+      description: Development server
+    - url: https://api.jangquranaksunna.org
+      description: Production server
+
+---
+# Development profile
+spring:
+  config:
+    activate:
+      on-profile: development
+  
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    org.jangquranaksunna: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+
+---
+# Docker profile
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+logging:
+  level:
+    org.jangquranaksunna: INFO
+
+---
+# Production profile
+spring:
+  config:
+    activate:
+      on-profile: production
+  
+  jpa:
+    show-sql: false
+
+logging:
+  level:
+    org.jangquranaksunna: WARN
+
+server:
+  port: 8080

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 
@@ -10,7 +10,13 @@ export const metadata: Metadata = {
   keywords: ['islam', 'enseignement', 'coran', 'hadith', 'administration'],
   authors: [{ name: 'JangQuranAkSunna Team' }],
   robots: 'noindex, nofollow', // Admin interface should not be indexed
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: '#0ea5e9',
 }
 
 export default function RootLayout({
@@ -23,7 +29,6 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <meta name="theme-color" content="#0ea5e9" />
       </head>
       <body className={inter.className} suppressHydrationWarning>
         <div id="root">

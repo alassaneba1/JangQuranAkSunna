@@ -16,7 +16,29 @@ import {
   Eye,
   Calendar
 } from 'lucide-react'
-import { formatNumber, formatCurrency, getRelativeTime } from '@/lib/utils'
+
+// Helper functions
+const formatNumber = (num: number): string => {
+  return new Intl.NumberFormat('fr-FR').format(num)
+}
+
+const formatCurrency = (amount: number): string => {
+  return `${formatNumber(amount)} FCFA`
+}
+
+const getRelativeTime = (date: string): string => {
+  const now = new Date()
+  const checkDate = new Date(date)
+  const diffMs = now.getTime() - checkDate.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMs / 3600000)
+  
+  if (diffMins < 1) return 'À l\'instant'
+  if (diffMins < 60) return `Il y a ${diffMins} min`
+  if (diffHours < 24) return `Il y a ${diffHours}h`
+  
+  return checkDate.toLocaleDateString('fr-FR')
+}
 
 // Mock data for demonstration
 const mockStats = {
@@ -61,23 +83,23 @@ const StatCard = ({
   value, 
   icon: Icon, 
   trend, 
-  color = 'blue' 
+  iconColor = 'text-blue-500' 
 }: {
   title: string
   value: string | number
   icon: any
   trend?: string
-  color?: string
+  iconColor?: string
 }) => (
   <Card>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <CardTitle className="text-sm font-medium">{title}</CardTitle>
-      <Icon className={`h-4 w-4 text-${color}-500`} />
+      <Icon className={`h-4 w-4 ${iconColor}`} />
     </CardHeader>
     <CardContent>
       <div className="text-2xl font-bold">{typeof value === 'number' ? formatNumber(value) : value}</div>
       {trend && (
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-gray-500">
           <span className="text-green-500">+{trend}</span> depuis le mois dernier
         </p>
       )}
@@ -102,7 +124,7 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
                   <BookOpen className="w-5 h-5 text-white" />
                 </div>
               </div>
@@ -112,7 +134,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Badge variant="outline" className="text-islamic-600">
+              <Badge variant="outline" className="text-green-600">
                 <Calendar className="w-3 h-3 mr-1" />
                 {new Date().toLocaleDateString('fr-FR', { 
                   weekday: 'long', 
@@ -148,28 +170,28 @@ export default function DashboardPage() {
             value={stats.totalContents}
             icon={Video}
             trend="12%"
-            color="blue"
+            iconColor="text-blue-500"
           />
           <StatCard
             title="Enseignants"
             value={stats.totalTeachers}
             icon={Users}
             trend="8%"
-            color="green"
+            iconColor="text-green-500"
           />
           <StatCard
             title="Mosquées"
             value={stats.totalMosques}
             icon={Building}
             trend="5%"
-            color="purple"
+            iconColor="text-purple-500"
           />
           <StatCard
             title="Utilisateurs"
             value={stats.totalUsers}
             icon={Users}
             trend="23%"
-            color="orange"
+            iconColor="text-orange-500"
           />
         </div>
 
@@ -180,27 +202,27 @@ export default function DashboardPage() {
             value={stats.totalViews}
             icon={Eye}
             trend="18%"
-            color="indigo"
+            iconColor="text-indigo-500"
           />
           <StatCard
             title="Téléchargements"
             value={stats.totalDownloads}
             icon={Download}
             trend="25%"
-            color="pink"
+            iconColor="text-pink-500"
           />
           <StatCard
             title="Donations"
             value={formatCurrency(stats.totalDonations)}
             icon={Heart}
             trend="15%"
-            color="red"
+            iconColor="text-red-500"
           />
           <StatCard
             title="Signalements"
             value={stats.pendingReports}
             icon={AlertCircle}
-            color="yellow"
+            iconColor="text-yellow-500"
           />
         </div>
 
@@ -218,7 +240,7 @@ export default function DashboardPage() {
                 {stats.contentsByType.map((item) => (
                   <div key={item.type} className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <div className="w-3 h-3 rounded-full bg-brand-500 mr-3" />
+                      <div className="w-3 h-3 rounded-full bg-blue-500 mr-3" />
                       <span className="text-sm font-medium">{item.type}</span>
                     </div>
                     <span className="text-sm text-gray-600">{formatNumber(item.count)}</span>

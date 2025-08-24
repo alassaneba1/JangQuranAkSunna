@@ -1,0 +1,43 @@
+{
+  "common": {
+    "loading": "جاري التحميل...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تحرير",
+    "view": "عرض",
+    "search": "بحث",
+    "filter": "تصفية",
+    "sort": "ترتيب",
+    "refresh": "تحديث",
+    "close": "إغلاق",
+    "submit": "إرسال",
+    "reset": "إعادة تعيين",
+    "back": "العودة",
+    "next": "التالي",
+    "previous": "السابق",
+    "yes": "نعم",
+    "no": "لا"
+  },
+  "navigation": {
+    "dashboard": "لوحة المراقبة",
+    "contents": "المحتويات",
+    "teachers": "المعلمون",
+    "mosques": "المساجد",
+    "users": "المستخدمون",
+    "reports": "التقارير",
+    "donations": "التبرعات",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج"
+  },
+  "dashboard": {
+    "title": "لوحة المراقبة",
+    "description": "نظرة عامة على المنصة",
+    "totalContents": "إ��مالي المحتويات",
+    "totalTeachers": "المعلمون",
+    "totalMosques": "المساجد",
+    "totalUsers": "المستخدمون",
+    "recentActivity": "النشاط الأخير",
+    "quickActions": "الإجراءات السريعة"
+  }
+}

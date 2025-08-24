@@ -1,0 +1,39 @@
+# Development Dockerfile for Spring Boot API with hot reload
+
+FROM gradle:8.5-jdk21-alpine
+
+RUN apk add --no-cache \
+    curl \
+    ffmpeg
+
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup --system spring && adduser --system spring --ingroup spring
+
+# Copy gradle files
+COPY build.gradle settings.gradle gradlew ./
+COPY gradle gradle/
+
+# Download dependencies
+RUN gradle dependencies --no-daemon
+
+# Change ownership
+RUN chown -R spring:spring /app
+USER spring:spring
+
+# Create uploads directory
+RUN mkdir -p uploads
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# Expose ports (8080 for app, 5005 for debug)
+EXPOSE 8080 5005
+
+# JVM options for development with debugging
+ENV JAVA_OPTS="-Xms256m -Xmx512m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+
+# Default command - can be overridden
+CMD ["./gradlew", "bootRun", "--args='--spring.profiles.active=development'"]

@@ -1,0 +1,160 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.flywaydb.flyway' version '9.22.3'
+    id 'com.diffplug.spotless' version '6.22.0'
+    id 'jacoco'
+    id 'org.springdoc.openapi-gradle-plugin' version '1.7.0'
+}
+
+group = 'org.jangquranaksunna'
+version = '1.0.0'
+sourceCompatibility = '21'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot Starters
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    
+    // Database
+    implementation 'org.postgresql:postgresql'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+    
+    // Security & JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+    
+    // Elasticsearch
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+    
+    // MinIO S3
+    implementation 'io.minio:minio:8.5.7'
+    
+    // File processing
+    implementation 'net.bramp.ffmpeg:ffmpeg:0.8.0'
+    implementation 'org.apache.tika:tika-core:2.9.1'
+    implementation 'org.apache.tika:tika-parsers-standard-package:2.9.1'
+    
+    // JSON Processing
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    
+    // Utility libraries
+    implementation 'org.apache.commons:commons-lang3'
+    implementation 'org.apache.commons:commons-collections4:4.4'
+    implementation 'commons-io:commons-io:2.15.1'
+    
+    // API Documentation
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    
+    // Monitoring & Observability
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'io.opentelemetry:opentelemetry-api'
+    implementation 'io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter:1.32.0-alpha'
+    
+    // Payment integrations (stubs for now)
+    implementation 'com.stripe:stripe-java:24.16.0'
+    
+    // Development tools
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.testcontainers:elasticsearch'
+    testImplementation 'com.redis.testcontainers:testcontainers-redis:1.6.4'
+    testImplementation 'com.h2database:h2'
+    testImplementation 'org.mockito:mockito-inline'
+    testImplementation 'org.assertj:assertj-core'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.testcontainers:testcontainers-bom:1.19.3"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.0"
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+// Code formatting
+spotless {
+    java {
+        googleJavaFormat('1.17.0')
+        importOrder()
+        removeUnusedImports()
+        formatAnnotations()
+    }
+}
+
+// Flyway configuration
+flyway {
+    url = System.getenv('DATABASE_URL') ?: 'jdbc:postgresql://localhost:5432/jangquranaksunna'
+    user = System.getenv('DB_USERNAME') ?: 'postgres'
+    password = System.getenv('DB_PASSWORD') ?: 'postgres123'
+    locations = ['classpath:db/migration']
+    baselineOnMigrate = true
+}
+
+// OpenAPI generation
+openApi {
+    apiDocsUrl.set("http://localhost:8080/v3/api-docs")
+    outputDir.set(file("$projectDir/docs"))
+    outputFileName.set("openapi.yaml")
+}
+
+// Custom tasks
+task seedData(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.jangquranaksunna.JangQuranAkSunnaApplication'
+    args = ['--spring.profiles.active=seed']
+}
+
+task generateApiDocs(type: JavaExec) {
+    dependsOn build
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.springdoc.openapi.gradle.plugin.OpenApiGeneratorTask'
+}
+
+// Docker build task
+task buildDockerImage(type: Exec) {
+    dependsOn build
+    commandLine 'docker', 'build', '-t', "jangquranaksunna/api:${version}", '.'
+}

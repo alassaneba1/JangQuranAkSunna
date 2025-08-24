@@ -1,0 +1,43 @@
+{
+  "common": {
+    "loading": "Dafa yàggul...",
+    "save": "Kayit",
+    "cancel": "Tiit",
+    "delete": "Dindi",
+    "edit": "Soppi",
+    "view": "Gis",
+    "search": "Ceet",
+    "filter": "Siiñ",
+    "sort": "Rumb",
+    "refresh": "Yeesal",
+    "close": "Tëj",
+    "submit": "Yónnë",
+    "reset": "Delloo",
+    "back": "Dellu",
+    "next": "Ci kanam",
+    "previous": "Ci ginnaaw",
+    "yes": "Waaw",
+    "no": "Déedet"
+  },
+  "navigation": {
+    "dashboard": "Waar wi",
+    "contents": "Yit yi",
+    "teachers": "Jàngalekat yi",
+    "mosques": "Juumaa yi",
+    "users": "Jëfandikukat yi",
+    "reports": "Rapoor yi",
+    "donations": "Sedde yi",
+    "settings": "Reglaamaa yi",
+    "logout": "Génn"
+  },
+  "dashboard": {
+    "title": "Waar wi",
+    "description": "Gënnal bu bees ci platefoom bi",
+    "totalContents": "Yépp yit yi",
+    "totalTeachers": "Jàngalekat yi",
+    "totalMosques": "Juumaa yi",
+    "totalUsers": "Jëfandikukat yi",
+    "recentActivity": "Liggéey yu mujj",
+    "quickActions": "Jëf yu gaawe"
+  }
+}

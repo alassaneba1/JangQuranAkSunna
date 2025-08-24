@@ -1,0 +1,43 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "sort": "Trier",
+    "refresh": "Actualiser",
+    "close": "Fermer",
+    "submit": "Soumettre",
+    "reset": "Réinitialiser",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "contents": "Contenus",
+    "teachers": "Enseignants",
+    "mosques": "Mosquées",
+    "users": "Utilisateurs",
+    "reports": "Signalements",
+    "donations": "Donations",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "description": "Vue d'ensemble de la plateforme",
+    "totalContents": "Contenus totaux",
+    "totalTeachers": "Enseignants",
+    "totalMosques": "Mosquées", 
+    "totalUsers": "Utilisateurs",
+    "recentActivity": "Activité récente",
+    "quickActions": "Actions rapides"
+  }
+}

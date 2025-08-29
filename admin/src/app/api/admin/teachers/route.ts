@@ -2,7 +2,24 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth } from '../../_lib/session'
 import { buildPagination } from '../_lib/paginate'
 
-const TEACHERS: any[] = []
+const TEACHERS: any[] = [
+  {
+    id: 1,
+    displayName: 'Imam Mansour Diop',
+    languages: ['fr', 'wo'],
+    verified: true,
+    status: 'VERIFIED',
+    user: { id: 101, name: 'Mansour Diop' },
+  },
+  {
+    id: 2,
+    displayName: 'Cheikh Ahmed Ba',
+    languages: ['ar', 'fr'],
+    verified: false,
+    status: 'PENDING',
+    user: { id: 102, name: 'Ahmed Ba' },
+  },
+]
 
 export async function GET(req: NextRequest) {
   try {

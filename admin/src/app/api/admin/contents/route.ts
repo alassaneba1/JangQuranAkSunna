@@ -16,7 +16,16 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const page = searchParams.get('page')
     const size = searchParams.get('size')
-    const res = buildPagination(CONTENTS, page, size)
+    const q = (searchParams.get('q') || '').toLowerCase()
+    const type = searchParams.get('type') || ''
+    const lang = searchParams.get('lang') || ''
+    const filtered = CONTENTS.filter((c) => {
+      if (q && !(c.title?.toLowerCase().includes(q))) return false
+      if (type && c.type !== type) return false
+      if (lang && c.lang !== lang) return false
+      return true
+    })
+    const res = buildPagination(filtered, page, size)
     return NextResponse.json(res)
   } catch (e: any) {
     const status = e?.status || 401

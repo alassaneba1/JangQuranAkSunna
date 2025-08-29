@@ -9,14 +9,15 @@ WORKDIR /app
 COPY build.gradle settings.gradle gradlew ./
 COPY gradle gradle/
 
-# Download dependencies
-RUN gradle dependencies --no-daemon
+# Ensure wrapper is executable and download dependencies via wrapper
+RUN chmod +x gradlew \
+    && ./gradlew dependencies --no-daemon
 
 # Copy source code
 COPY src src/
 
-# Build application
-RUN gradle build --no-daemon -x test
+# Build application with wrapper
+RUN ./gradlew build --no-daemon -x test
 
 # Runtime stage
 FROM eclipse-temurin:21-jre-jammy

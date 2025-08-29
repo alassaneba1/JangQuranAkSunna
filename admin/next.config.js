@@ -33,23 +33,25 @@ const nextConfig = {
     ];
   },
   async headers() {
+    const securityHeaders = [
+      {
+        key: 'X-Content-Type-Options',
+        value: 'nosniff',
+      },
+      {
+        key: 'Referrer-Policy',
+        value: 'strict-origin-when-cross-origin',
+      },
+    ];
+
+    if (process.env.NODE_ENV !== 'development') {
+      securityHeaders.unshift({ key: 'X-Frame-Options', value: 'DENY' });
+    }
+
     return [
       {
         source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-        ],
+        headers: securityHeaders,
       },
     ];
   },

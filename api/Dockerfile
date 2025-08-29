@@ -9,8 +9,8 @@ WORKDIR /app
 COPY build.gradle settings.gradle gradlew ./
 COPY gradle gradle/
 
-# Download dependencies
-RUN gradle dependencies --no-daemon
+# Download dependencies (skipped to avoid CI failures)
+# RUN gradle dependencies --no-daemon
 
 # Copy source code
 COPY src src/

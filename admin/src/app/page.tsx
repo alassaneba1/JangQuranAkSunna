@@ -1,15 +1,17 @@
 'use client'
 
+'use client'
+
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Users, 
-  BookOpen, 
-  Building, 
-  Video, 
-  TrendingUp, 
+import {
+  Users,
+  BookOpen,
+  Building,
+  Video,
+  TrendingUp,
   AlertCircle,
   Download,
   Heart,
@@ -110,8 +112,10 @@ const StatCard = ({
 export default function DashboardPage() {
   const [stats, setStats] = useState(mockStats)
   const [isLoading, setIsLoading] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     // In real app, fetch dashboard stats here
     // dashboardApi.getStats().then(setStats)
   }, [])
@@ -136,12 +140,12 @@ export default function DashboardPage() {
             <div className="flex items-center space-x-4">
               <Badge variant="outline" className="text-green-600" suppressHydrationWarning>
                 <Calendar className="w-3 h-3 mr-1" />
-                {new Date().toLocaleDateString('fr-FR', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}
+                {mounted ? new Date().toLocaleDateString('fr-FR', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                }) : ''}
               </Badge>
               <Button>
                 Voir l'application
@@ -266,7 +270,7 @@ export default function DashboardPage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-gray-900">{activity.message}</p>
                       <p className="text-xs text-gray-500" suppressHydrationWarning>
-                        {getRelativeTime(activity.timestamp)}
+                        {mounted ? getRelativeTime(activity.timestamp) : ''}
                       </p>
                     </div>
                   </div>

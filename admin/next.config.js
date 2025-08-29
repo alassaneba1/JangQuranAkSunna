@@ -33,8 +33,7 @@ const nextConfig = {
     ];
   },
   async headers() {
-    const isProd = process.env.NODE_ENV === 'production'
-    const commonHeaders = [
+    const securityHeaders = [
       {
         key: 'X-Content-Type-Options',
         value: 'nosniff',
@@ -45,17 +44,15 @@ const nextConfig = {
       },
     ]
 
-    const headers = isProd
-      ? [
-          { key: 'X-Frame-Options', value: 'DENY' },
-          ...commonHeaders,
-        ]
-      : commonHeaders
+    // Add frame protection outside development to allow embedding in local preview
+    if (process.env.NODE_ENV !== 'development') {
+      securityHeaders.unshift({ key: 'X-Frame-Options', value: 'DENY' })
+    }
 
     return [
       {
         source: '/(.*)',
-        headers,
+        headers: securityHeaders,
       },
     ]
   },

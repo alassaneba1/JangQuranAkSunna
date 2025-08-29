@@ -89,9 +89,11 @@ dependencies {
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.testcontainers:elasticsearch'
     testImplementation 'com.redis.testcontainers:testcontainers-redis:1.6.4'
-    testImplementation 'com.h2database:h2'
     testImplementation 'org.mockito:mockito-inline'
     testImplementation 'org.assertj:assertj-core'
+
+    // Dev database (H2 in-memory)
+    runtimeOnly 'com.h2database:h2'
 }
 
 dependencyManagement {

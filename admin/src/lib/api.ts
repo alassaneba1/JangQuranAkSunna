@@ -5,6 +5,7 @@ import { ApiResponse, PaginatedResponse, ApiError } from '@/types'
 const api: AxiosInstance = axios.create({
   baseURL: '/api',
   timeout: 30000,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',

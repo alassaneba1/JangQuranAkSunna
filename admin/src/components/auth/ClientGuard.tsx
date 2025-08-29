@@ -1,5 +1,7 @@
 "use client"
 
+'use client'
+
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { authApi } from '@/lib/api'
@@ -15,6 +17,11 @@ export default function ClientGuard({ children }: { children: React.ReactNode })
       try {
         // Allow login page without check
         if (pathname === '/login') {
+          setChecking(false)
+          return
+        }
+        // Optional dev bypass
+        if (process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true') {
           setChecking(false)
           return
         }

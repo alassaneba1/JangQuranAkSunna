@@ -42,10 +42,11 @@ const nextConfig = {
         key: 'Referrer-Policy',
         value: 'strict-origin-when-cross-origin',
       },
-    ];
+    ]
 
+    // Add frame protection outside development to allow embedding in local preview
     if (process.env.NODE_ENV !== 'development') {
-      securityHeaders.unshift({ key: 'X-Frame-Options', value: 'DENY' });
+      securityHeaders.unshift({ key: 'X-Frame-Options', value: 'DENY' })
     }
 
     return [
@@ -53,7 +54,7 @@ const nextConfig = {
         source: '/(.*)',
         headers: securityHeaders,
       },
-    ];
+    ]
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {

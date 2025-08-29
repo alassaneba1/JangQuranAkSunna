@@ -7,13 +7,15 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
-const fetcher = async () => {
-  const res = await contentApi.getContents({ page: 1, size: 10 })
-  return res
-}
-
 export default function ContentsPage() {
-  const { data, error, isLoading, mutate } = useSWR('contents:list:1:10', fetcher)
+  const [query, setQuery] = useState('')
+  const [filterType, setFilterType] = useState('')
+  const [filterLang, setFilterLang] = useState('')
+  const fetcher = async () => {
+    const res = await contentApi.getContents({ page: 1, size: 10, q: query || undefined, type: filterType || undefined, lang: filterLang || undefined })
+    return res
+  }
+  const { data, error, isLoading, mutate } = useSWR(`contents:list:1:10:${query}:${filterType}:${filterLang}`, fetcher)
   const [title, setTitle] = useState('')
   const [type, setType] = useState('AUDIO')
   const [lang, setLang] = useState('fr')

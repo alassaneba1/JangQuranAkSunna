@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth } from '../../_lib/session'
 import { buildPagination } from '../_lib/paginate'
 
-const CONTENTS: any[] = []
+const CONTENTS: any[] = [
+  { id: 1, title: 'Tafsir Sourate Al-Fatiha', type: 'AUDIO', lang: 'fr', viewsCount: 1240 },
+  { id: 2, title: 'Introduction au Fiqh Maliki', type: 'VIDEO', lang: 'wo', viewsCount: 860 },
+]
 
 export async function GET(req: NextRequest) {
   try {

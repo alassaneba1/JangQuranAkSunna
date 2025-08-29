@@ -33,25 +33,31 @@ const nextConfig = {
     ];
   },
   async headers() {
+    const isProd = process.env.NODE_ENV === 'production'
+    const commonHeaders = [
+      {
+        key: 'X-Content-Type-Options',
+        value: 'nosniff',
+      },
+      {
+        key: 'Referrer-Policy',
+        value: 'strict-origin-when-cross-origin',
+      },
+    ]
+
+    const headers = isProd
+      ? [
+          { key: 'X-Frame-Options', value: 'DENY' },
+          ...commonHeaders,
+        ]
+      : commonHeaders
+
     return [
       {
         source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-        ],
+        headers,
       },
-    ];
+    ]
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {

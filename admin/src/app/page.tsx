@@ -134,7 +134,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Badge variant="outline" className="text-green-600">
+              <Badge variant="outline" className="text-green-600" suppressHydrationWarning>
                 <Calendar className="w-3 h-3 mr-1" />
                 {new Date().toLocaleDateString('fr-FR', { 
                   weekday: 'long', 
@@ -265,7 +265,7 @@ export default function DashboardPage() {
                     <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-gray-900">{activity.message}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500" suppressHydrationWarning>
                         {getRelativeTime(activity.timestamp)}
                       </p>
                     </div>

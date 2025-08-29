@@ -15,21 +15,34 @@ export default function ClientGuard({ children }: { children: React.ReactNode })
     let cancelled = false
     const check = async () => {
       try {
-        // Allow login page without check
-        if (pathname === '/login') {
-          setChecking(false)
-          return
-        }
-        // Optional dev bypass
-        if (process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true') {
-          setChecking(false)
-          return
-        }
-        // If token exists, allow; otherwise validate via /me (cookie-based backends)
         const token =
           typeof window !== 'undefined'
             ? localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token')
             : null
+
+        // Optional dev bypass
+        if (process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true') {
+          if (!cancelled) setChecking(false)
+          return
+        }
+
+        if (pathname === '/login') {
+          // If already authenticated, redirect away from login
+          if (token) {
+            if (!cancelled) router.replace('/')
+            return
+          }
+          try {
+            await authApi.getCurrentUser()
+            if (!cancelled) router.replace('/')
+            return
+          } catch {
+            if (!cancelled) setChecking(false)
+            return
+          }
+        }
+
+        // For protected pages: if token missing, try /me; else allow
         if (!token) {
           await authApi.getCurrentUser()
         }

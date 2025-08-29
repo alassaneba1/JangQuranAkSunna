@@ -100,6 +100,7 @@ dependencyManagement {
     imports {
         mavenBom "org.testcontainers:testcontainers-bom:1.19.3"
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.0"
+        mavenBom "org.flywaydb:flyway-bom:9.22.3"
     }
 }
 

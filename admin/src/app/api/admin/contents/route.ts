@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
   try {
     requireAuth(req.headers.get('authorization'))
     const body = await req.json()
-    const item = { id: NEXT_ID++, title: body.title, type: body.type || 'AUDIO', lang: body.lang || 'fr', viewsCount: body.viewsCount || 0 }
+    const item = { id: NEXT_ID++, title: body.title, type: body.type || 'AUDIO', lang: body.lang || 'fr', viewsCount: body.viewsCount || 0, mediaUrl: body.mediaUrl || '' }
     CONTENTS.push(item)
     ;(globalThis as any).__CONTENTS_NEXT_ID__ = NEXT_ID
     return NextResponse.json({ data: item, success: true, message: 'OK', timestamp: new Date().toISOString() })

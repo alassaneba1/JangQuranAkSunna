@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import ClientGuard from '@/components/auth/ClientGuard'
+import AppHeader from '@/components/layout/AppHeader'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -9,7 +11,7 @@ export const metadata: Metadata = {
   description: 'Interface d\'administration pour la plateforme d\'enseignement islamique JangQuranAkSunna',
   keywords: ['islam', 'enseignement', 'coran', 'hadith', 'administration'],
   authors: [{ name: 'JangQuranAkSunna Team' }],
-  robots: 'noindex, nofollow', // Admin interface should not be indexed
+  robots: 'noindex, nofollow',
 }
 
 export const viewport: Viewport = {
@@ -31,10 +33,13 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
       <body className={inter.className} suppressHydrationWarning>
-        <div id="root">
-          {children}
-        </div>
-        <div id="portal" />
+        <ClientGuard>
+          <AppHeader />
+          <div id="root">
+            {children}
+          </div>
+          <div id="portal" />
+        </ClientGuard>
       </body>
     </html>
   )

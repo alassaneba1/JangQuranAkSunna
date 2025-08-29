@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth } from '../../_lib/session'
 import { buildPagination } from '../_lib/paginate'
 
-const MOSQUES: any[] = []
+const MOSQUES: any[] = [
+  { id: 1, name: 'Grande Mosquée de Dakar', city: 'Dakar', country: 'Sénégal' },
+  { id: 2, name: 'Mosquée Al-Falah', city: 'Thiaroye', country: 'Sénégal' },
+]
 
 export async function GET(req: NextRequest) {
   try {

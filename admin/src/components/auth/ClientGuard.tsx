@@ -20,6 +20,11 @@ export default function ClientGuard({ children }: { children: React.ReactNode })
           setChecking(false)
           return
         }
+        // Optional dev bypass
+        if (process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true') {
+          setChecking(false)
+          return
+        }
         // If token exists, allow; otherwise validate via /me (cookie-based backends)
         const token =
           typeof window !== 'undefined'

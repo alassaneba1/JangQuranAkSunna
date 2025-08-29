@@ -57,6 +57,23 @@ export default function ContentsPage() {
           <CardDescription>Liste des contenus (10 premiers)</CardDescription>
         </CardHeader>
         <CardContent>
+          <div className="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+            <input className="form-input" placeholder="Rechercher (titre)" value={query} onChange={e => setQuery(e.target.value)} />
+            <select className="form-select" value={filterType} onChange={e => setFilterType(e.target.value)}>
+              <option value="">Type (tous)</option>
+              <option value="AUDIO">AUDIO</option>
+              <option value="VIDEO">VIDEO</option>
+              <option value="PDF">PDF</option>
+              <option value="TEXT">TEXT</option>
+            </select>
+            <select className="form-select" value={filterLang} onChange={e => setFilterLang(e.target.value)}>
+              <option value="">Langue (toutes)</option>
+              <option value="fr">fr</option>
+              <option value="wo">wo</option>
+              <option value="ar">ar</option>
+            </select>
+            <Button variant="outline" onClick={() => { setQuery(''); setFilterType(''); setFilterLang('') }}>Réinitialiser</Button>
+          </div>
           <div className="mb-6 grid grid-cols-1 md:grid-cols-6 gap-3">
             <input className="form-input" placeholder="Titre" value={title} onChange={e => setTitle(e.target.value)} />
             <select className="form-select" value={type} onChange={e => setType(e.target.value)}>

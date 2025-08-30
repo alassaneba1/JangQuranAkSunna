@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     if (!file) return NextResponse.json({ success: false, message: 'file requis' }, { status: 400 })
     const arrayBuf = await file.arrayBuffer()
     const buf = Buffer.from(arrayBuf)
-    const saved = saveFile(buf, file.type || 'application/octet-stream', (file as any).name || 'upload')
+    const saved = await saveFile(buf, file.type || 'application/octet-stream', (file as any).name || 'upload')
     const url = buildUrl(saved.id)
     return NextResponse.json({ data: { id: saved.id, url, filename: saved.filename, mime: saved.mime, size: saved.size }, success: true, message: 'OK', timestamp: new Date().toISOString() })
   } catch (e: any) {

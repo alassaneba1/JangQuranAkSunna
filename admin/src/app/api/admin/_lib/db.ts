@@ -177,3 +177,54 @@ export function listContents({ page = 1, size = 10, q, type, lang }: { page?: nu
 export function getContent(id: number) {
   return CONTENTS.find(c => c.id === id) || null
 }
+
+export function createContent(input: Partial<Content>) {
+  const teacher = input.teacher || TEACHERS[0]
+  const c: Content = {
+    id: contentIdSeq++,
+    type: (input.type as any) || ContentType.AUDIO,
+    title: input.title || 'Nouveau contenu',
+    description: input.description || '',
+    teacher: teacher!,
+    mosque: input.mosque,
+    series: input.series,
+    seriesOrder: input.seriesOrder,
+    lang: (input.lang as any) || 'fr',
+    durationSeconds: input.durationSeconds,
+    status: (input.status as any) || ContentStatus.DRAFT,
+    publishedAt: input.publishedAt,
+    sourceType: input.sourceType,
+    sourceUrl: input.sourceUrl,
+    sourceMetadata: input.sourceMetadata,
+    thumbnailUrl: input.thumbnailUrl,
+    waveformData: input.waveformData,
+    viewsCount: 0,
+    downloadsCount: 0,
+    likesCount: 0,
+    favoritesCount: 0,
+    reportsCount: 0,
+    downloadEnabled: true,
+    downloadRequiresAuth: false,
+    offlineExpirationDays: input.offlineExpirationDays,
+    contentHash: input.contentHash,
+    perceptualHash: input.perceptualHash,
+    quranReferences: input.quranReferences,
+    hadithReferences: input.hadithReferences,
+    hasTranscript: false,
+    hasTranslation: false,
+    assets: input.assets || [],
+    chapters: input.chapters || [],
+    tags: input.tags as any,
+    createdAt: nowISO(),
+    updatedAt: nowISO(),
+  }
+  CONTENTS.unshift(c)
+  return c
+}
+
+export function updateContent(id: number, patch: Partial<Content>) {
+  const idx = CONTENTS.findIndex(c => c.id === id)
+  if (idx === -1) return null
+  CONTENTS[idx] = { ...CONTENTS[idx], ...patch, updatedAt: nowISO() }
+  return CONTENTS[idx]
+}

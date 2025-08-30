@@ -49,6 +49,14 @@ export function seedIfEmpty() {
     store.MOSQUES.push({ id: store.mosqueIdSeq++, name: 'Grande Mosquée de Dakar', city: 'Dakar', country: 'Sénégal', verified: true, status: 'ACTIVE' as any, services: [], languages: ['fr','wo'], followersCount: 0, contentCount: 0, eventsCount: 0, createdAt: nowISO(), updatedAt: nowISO() })
     store.MOSQUES.push({ id: store.mosqueIdSeq++, name: 'Mosquée Al-Falah', city: 'Thiès', country: 'Sénégal', verified: false, status: 'PENDING' as any, services: [], languages: ['fr'], followersCount: 0, contentCount: 0, eventsCount: 0, createdAt: nowISO(), updatedAt: nowISO() })
   }
+  if (store.THEMES.length === 0) {
+    store.THEMES.push({ id: store.themeIdSeq++, name: 'Tafsir', slug: 'tafsir', description: 'Exégèse', displayOrder: 1, isFeatured: true, isActive: true, contentCount: 0, seriesCount: 0, createdAt: nowISO(), updatedAt: nowISO() } as any)
+    store.THEMES.push({ id: store.themeIdSeq++, name: 'Fiqh', slug: 'fiqh', description: 'Jurisprudence', displayOrder: 2, isFeatured: false, isActive: true, contentCount: 0, seriesCount: 0, createdAt: nowISO(), updatedAt: nowISO() } as any)
+  }
+  if (store.TAGS.length === 0) {
+    store.TAGS.push({ id: store.tagIdSeq++, name: 'Ramadan', slug: 'ramadan', description: 'Mois de Ramadan', type: TagType.OCCASION, isFeatured: false, isActive: true, usageCount: 0, createdAt: nowISO(), updatedAt: nowISO() } as any)
+    store.TAGS.push({ id: store.tagIdSeq++, name: 'Aqida', slug: 'aqida', description: 'Croyance', type: TagType.TOPIC, isFeatured: false, isActive: true, usageCount: 0, createdAt: nowISO(), updatedAt: nowISO() } as any)
+  }
   if (store.CONTENTS.length === 0) {
     const teacher = store.TEACHERS[0]
     const c1: Content = {

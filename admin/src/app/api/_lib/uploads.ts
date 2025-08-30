@@ -9,7 +9,11 @@ export type StoredFile = {
   createdAt: number
 }
 
-const store = new Map<string, StoredFile>()
+const g = globalThis as any
+if (!g.__JQS_UPLOAD_STORE) {
+  g.__JQS_UPLOAD_STORE = new Map<string, StoredFile>()
+}
+const store: Map<string, StoredFile> = g.__JQS_UPLOAD_STORE
 
 export function saveFile(buffer: Buffer, mime: string, filename: string): StoredFile {
   const id = randomBytes(16).toString('hex')

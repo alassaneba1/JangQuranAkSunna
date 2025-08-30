@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { BookOpen, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useState } from 'react'
 
 const links = [
   { href: '/', label: 'Tableau de bord' },

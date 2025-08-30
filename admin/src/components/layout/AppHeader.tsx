@@ -29,7 +29,10 @@ export default function AppHeader() {
   const [sugs, setSugs] = useState<{contentTitles:string[]; teacherNames:string[]}>({contentTitles:[], teacherNames:[]})
   const boxRef = useRef<HTMLDivElement>(null)
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+    } catch {}
     if (typeof window !== 'undefined') {
       localStorage.removeItem('auth_token')
       sessionStorage.removeItem('auth_token')

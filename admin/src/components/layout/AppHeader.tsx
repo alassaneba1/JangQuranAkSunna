@@ -31,11 +31,36 @@ export default function AppHeader() {
   if (pathname === '/login') return null
 
   const [query, setQuery] = useState('')
+  const [open, setOpen] = useState(false)
+  const [sugs, setSugs] = useState<{contentTitles:string[]; teacherNames:string[]}>({contentTitles:[], teacherNames:[]})
+  const boxRef = useRef<HTMLDivElement>(null)
+
+  useEffect(()=>{
+    const onClick = (e:any)=>{ if (!boxRef.current?.contains(e.target)) setOpen(false) }
+    document.addEventListener('click', onClick)
+    return ()=>document.removeEventListener('click', onClick)
+  },[])
+
+  useEffect(()=>{
+    const t = setTimeout(async ()=>{
+      const token = typeof window!=='undefined' ? (localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token')) : null
+      if (!query) { setSugs({contentTitles:[], teacherNames:[]}); return }
+      const res = await fetch(`/api/search/suggest?q=${encodeURIComponent(query)}`, { headers: token? { Authorization: `Bearer ${token}` }: undefined })
+      if (res.ok) setSugs(await res.json().then(j=>j.data))
+    }, 200)
+    return ()=>clearTimeout(t)
+  },[query])
+
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (!query) return
+    try {
+      const history = JSON.parse(localStorage.getItem('search_history') || '[]') as string[]
+      const next = [query, ...history.filter(q=>q!==query)].slice(0,5)
+      localStorage.setItem('search_history', JSON.stringify(next))
+    } catch {}
     router.push(`/contents?q=${encodeURIComponent(query)}`)
-    setQuery('')
+    setOpen(false)
   }
 
   return (

@@ -34,6 +34,12 @@ export default function TeachersPage() {
               <option value="true">Vérifiés</option>
               <option value="false">Non vérifiés</option>
             </select>
+            <select className="form-select w-full md:w-40" value={lang} onChange={e=>{setPage(1);setLang(e.target.value as any)}}>
+              <option value="ALL">Langues</option>
+              <option value="fr">Français</option>
+              <option value="wo">Wolof</option>
+              <option value="ar">Arabe</option>
+            </select>
           </div>
           {isLoading && <div>Chargement…</div>}
           {error && <div className="text-red-600">Erreur de chargement</div>}

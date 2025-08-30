@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { BookOpen, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 
 const links = [
   { href: '/', label: 'Tableau de bord' },

@@ -72,7 +72,7 @@ export default function ContentsPage() {
                         </video>
                       )}
                       {c.type === 'PDF' && (
-                        <iframe className="w-full h-96 border" src={c.assets?.[0]?.url} />
+                        <iframe className="w-full h-96 border" src={`/api/proxy?url=${encodeURIComponent(c.assets?.[0]?.url || '')}`} />
                       )}
                       {c.type === 'TEXT' && (
                         <div className="prose" dangerouslySetInnerHTML={{ __html: c.description || '' }} />

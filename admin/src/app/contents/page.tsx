@@ -77,6 +77,7 @@ export default function ContentsPage() {
   const { data, error, isLoading, mutate } = useSWR(key, fetcher)
 
   const pagination = data?.pagination
+  const facets = (data as any)?.facets
 
   const uploadFile = async (file: File) => {
     const fd = new FormData()

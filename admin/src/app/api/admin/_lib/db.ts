@@ -1,17 +1,18 @@
 import { Content, ContentStatus, ContentType, Teacher, TeacherStatus } from '@/types'
 
-let teacherIdSeq = 1
-let contentIdSeq = 1
-
-const TEACHERS: Teacher[] = []
-const CONTENTS: Content[] = []
+type Store = { teacherIdSeq: number; contentIdSeq: number; TEACHERS: Teacher[]; CONTENTS: Content[] }
+const g = globalThis as any
+if (!g.__JQS_DB) {
+  g.__JQS_DB = { teacherIdSeq: 1, contentIdSeq: 1, TEACHERS: [], CONTENTS: [] } as Store
+}
+const store: Store = g.__JQS_DB as Store
 
 function nowISO() { return new Date().toISOString() }
 
 export function seedIfEmpty() {
-  if (TEACHERS.length === 0) {
+  if (store.TEACHERS.length === 0) {
     const t1: Teacher = {
-      id: teacherIdSeq++,
+      id: store.teacherIdSeq++,
       displayName: 'Imam Mansour Diop',
       bio: 'Enseignant en tafsir et fiqh',
       languages: ['fr', 'wo'],
@@ -26,7 +27,7 @@ export function seedIfEmpty() {
       updatedAt: nowISO(),
     }
     const t2: Teacher = {
-      id: teacherIdSeq++,
+      id: store.teacherIdSeq++,
       displayName: 'Cheikh Ahmed Ba',
       bio: 'Cours de Aqida et Sira',
       languages: ['fr', 'ar'],
@@ -40,12 +41,12 @@ export function seedIfEmpty() {
       createdAt: nowISO(),
       updatedAt: nowISO(),
     }
-    TEACHERS.push(t1, t2)
+    store.TEACHERS.push(t1, t2)
   }
-  if (CONTENTS.length === 0) {
-    const teacher = TEACHERS[0]
+  if (store.CONTENTS.length === 0) {
+    const teacher = store.TEACHERS[0]
     const c1: Content = {
-      id: contentIdSeq++,
+      id: store.contentIdSeq++,
       type: ContentType.AUDIO,
       title: 'Introduction au Tafsir',
       description: 'Cours audio sur les bases du tafsir',
@@ -76,7 +77,7 @@ export function seedIfEmpty() {
       updatedAt: nowISO(),
     }
     const c2: Content = {
-      id: contentIdSeq++,
+      id: store.contentIdSeq++,
       type: ContentType.VIDEO,
       title: 'Fiqh de la prière',
       description: 'Vidéo explicative',
@@ -107,7 +108,7 @@ export function seedIfEmpty() {
       updatedAt: nowISO(),
     }
     const c3: Content = {
-      id: contentIdSeq++,
+      id: store.contentIdSeq++,
       type: ContentType.PDF,
       title: 'Guide du Ramadan',
       description: 'Document PDF',
@@ -137,14 +138,14 @@ export function seedIfEmpty() {
       createdAt: nowISO(),
       updatedAt: nowISO(),
     }
-    CONTENTS.push(c1, c2, c3)
+    store.CONTENTS.push(c1, c2, c3)
   }
 }
 
 export function listTeachers({ page = 1, size = 10, q, verified }: { page?: number; size?: number; q?: string | null; verified?: string | null }) {
   seedIfEmpty()
   const term = (q || '').toLowerCase().trim()
-  let items = [...TEACHERS]
+  let items = [...store.TEACHERS]
   if (term) items = items.filter(t => t.displayName.toLowerCase().includes(term) || (t.bio || '').toLowerCase().includes(term))
   if (verified === 'true') items = items.filter(t => t.verified)
   if (verified === 'false') items = items.filter(t => !t.verified)
@@ -155,16 +156,16 @@ export function listTeachers({ page = 1, size = 10, q, verified }: { page?: numb
 }
 
 export function updateTeacher(id: number, patch: Partial<Teacher>) {
-  const idx = TEACHERS.findIndex(t => t.id === id)
+  const idx = store.TEACHERS.findIndex(t => t.id === id)
   if (idx === -1) return null
-  TEACHERS[idx] = { ...TEACHERS[idx], ...patch, updatedAt: nowISO() }
-  return TEACHERS[idx]
+  store.TEACHERS[idx] = { ...store.TEACHERS[idx], ...patch, updatedAt: nowISO() }
+  return store.TEACHERS[idx]
 }
 
 export function listContents({ page = 1, size = 10, q, type, lang }: { page?: number; size?: number; q?: string | null; type?: string | null; lang?: string | null }) {
   seedIfEmpty()
   const term = (q || '').toLowerCase().trim()
-  let items = [...CONTENTS]
+  let items = [...store.CONTENTS]
   if (term) items = items.filter(c => c.title.toLowerCase().includes(term) || (c.description || '').toLowerCase().includes(term))
   if (type) items = items.filter(c => c.type === (type as ContentType))
   if (lang) items = items.filter(c => c.lang === lang)
@@ -175,13 +176,14 @@ export function listContents({ page = 1, size = 10, q, type, lang }: { page?: nu
 }
 
 export function getContent(id: number) {
-  return CONTENTS.find(c => c.id === id) || null
+  return store.CONTENTS.find(c => c.id === id) || null
 }
 
 export function createContent(input: Partial<Content>) {
-  const teacher = input.teacher || TEACHERS[0]
+  seedIfEmpty()
+  const teacher = input.teacher || store.TEACHERS[0]
   const c: Content = {
-    id: contentIdSeq++,
+    id: store.contentIdSeq++,
     type: (input.type as any) || ContentType.AUDIO,
     title: input.title || 'Nouveau contenu',
     description: input.description || '',
@@ -218,13 +220,13 @@ export function createContent(input: Partial<Content>) {
     createdAt: nowISO(),
     updatedAt: nowISO(),
   }
-  CONTENTS.unshift(c)
+  store.CONTENTS.unshift(c)
   return c
 }
 
 export function updateContent(id: number, patch: Partial<Content>) {
-  const idx = CONTENTS.findIndex(c => c.id === id)
+  const idx = store.CONTENTS.findIndex(c => c.id === id)
   if (idx === -1) return null
-  CONTENTS[idx] = { ...CONTENTS[idx], ...patch, updatedAt: nowISO() }
-  return CONTENTS[idx]
+  store.CONTENTS[idx] = { ...store.CONTENTS[idx], ...patch, updatedAt: nowISO() }
+  return store.CONTENTS[idx]
 }

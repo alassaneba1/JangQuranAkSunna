@@ -1,10 +1,10 @@
 "use client"
 
-'use client'
+"use client"
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { BookOpen, LogOut } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
@@ -22,6 +22,12 @@ const links = [
 export default function AppHeader() {
   const pathname = usePathname()
   const router = useRouter()
+  const hideHeader = pathname === '/login'
+
+  const [query, setQuery] = useState('')
+  const [open, setOpen] = useState(false)
+  const [sugs, setSugs] = useState<{contentTitles:string[]; teacherNames:string[]}>({contentTitles:[], teacherNames:[]})
+  const boxRef = useRef<HTMLDivElement>(null)
 
   const logout = () => {
     if (typeof window !== 'undefined') {
@@ -30,13 +36,6 @@ export default function AppHeader() {
     }
     router.replace('/login')
   }
-
-  if (pathname === '/login') return null
-
-  const [query, setQuery] = useState('')
-  const [open, setOpen] = useState(false)
-  const [sugs, setSugs] = useState<{contentTitles:string[]; teacherNames:string[]}>({contentTitles:[], teacherNames:[]})
-  const boxRef = useRef<HTMLDivElement>(null)
 
   useEffect(()=>{
     const onClick = (e:any)=>{ if (!boxRef.current?.contains(e.target)) setOpen(false) }
@@ -65,6 +64,8 @@ export default function AppHeader() {
     router.push(`/contents?q=${encodeURIComponent(query)}`)
     setOpen(false)
   }
+
+  if (hideHeader) return null
 
   return (
     <header className="bg-white border-b">

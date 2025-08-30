@@ -1,4 +1,4 @@
-import { randomBytes } from 'crypto'
+import { createHmac } from 'crypto'
 
 export type SessionUser = {
   id: number
@@ -9,11 +9,28 @@ export type SessionUser = {
   status?: string
 }
 
-const sessions = new Map<string, SessionUser>()
+function base64url(input: Buffer | string) {
+  const b = Buffer.isBuffer(input) ? input : Buffer.from(String(input))
+  return b.toString('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_')
+}
+
+function signHS256(data: string, secret: string) {
+  return base64url(createHmac('sha256', secret).update(data).digest())
+}
+
+function getSecret() {
+  return process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET || 'dev-secret'
+}
 
 export function createToken(user: SessionUser, remember = false) {
-  const token = randomBytes(32).toString('hex')
-  sessions.set(token, user)
+  const header = { alg: 'HS256', typ: 'JWT' }
+  const iat = Math.floor(Date.now() / 1000)
+  const exp = iat + (remember ? 60 * 60 * 24 * 30 : 60 * 60 * 24)
+  const payload = { sub: String(user.id), iat, exp, user }
+  const encHeader = base64url(JSON.stringify(header))
+  const encPayload = base64url(JSON.stringify(payload))
+  const signature = signHS256(`${encHeader}.${encPayload}`, getSecret())
+  const token = `${encHeader}.${encPayload}.${signature}`
   return { token, user }
 }
 
@@ -21,7 +38,18 @@ export function getUserFromAuthHeader(authorization?: string | null): SessionUse
   if (!authorization) return null
   const [scheme, token] = authorization.split(' ')
   if (!token || scheme !== 'Bearer') return null
-  return sessions.get(token) || null
+  const parts = token.split('.')
+  if (parts.length !== 3) return null
+  const [encHeader, encPayload, signature] = parts
+  const expected = signHS256(`${encHeader}.${encPayload}`, getSecret())
+  if (expected !== signature) return null
+  try {
+    const payload = JSON.parse(Buffer.from(encPayload.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString())
+    if (typeof payload.exp === 'number' && Math.floor(Date.now() / 1000) > payload.exp) return null
+    return payload.user as SessionUser
+  } catch {
+    return null
+  }
 }
 
 export function requireAuth(authorization?: string | null): SessionUser {

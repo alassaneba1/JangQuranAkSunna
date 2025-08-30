@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAuth } from '../../../_lib/session'
+import { requireAuthFromRequest } from '../../../_lib/session'
 import { deleteTheme, listThemes, updateTheme } from '../../../_lib/db'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const id = parseInt(params.id, 10)
     const item = listThemes({}).find(t => (t as any).id === id)
     if (!item) return NextResponse.json({ data: null, success: false, message: 'Introuvable', timestamp: new Date().toISOString() }, { status: 404 })
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const id = parseInt(params.id, 10)
     const body = await req.json().catch(() => ({}))
     const item = updateTheme(id, body || {})
@@ -29,7 +29,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const id = parseInt(params.id, 10)
     const ok = deleteTheme(id)
     if (!ok) return NextResponse.json({ data: null, success: false, message: 'Introuvable', timestamp: new Date().toISOString() }, { status: 404 })

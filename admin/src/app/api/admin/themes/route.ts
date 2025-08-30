@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAuth } from '../../_lib/session'
+import { requireAuthFromRequest } from '../../_lib/session'
 import { createTheme, listThemes } from '../../_lib/db'
 
 export async function GET(req: NextRequest) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const { searchParams } = new URL(req.url)
     const q = searchParams.get('q')
     const items = listThemes({ q })
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const body = await req.json().catch(() => ({}))
     const item = createTheme(body || {})
     return NextResponse.json({ data: item, success: true, message: 'Créé', timestamp: new Date().toISOString() })

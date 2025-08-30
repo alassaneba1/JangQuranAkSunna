@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAuth } from '../_lib/session'
+import { requireAuthFromRequest } from '../_lib/session'
 import { listContents, listTeachers } from '../admin/_lib/db'
 
 export async function GET(req: NextRequest) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const { searchParams } = new URL(req.url)
     const q = searchParams.get('q') || ''
     const limit = Math.max(1, Math.min(20, parseInt(searchParams.get('limit') || '10', 10)))

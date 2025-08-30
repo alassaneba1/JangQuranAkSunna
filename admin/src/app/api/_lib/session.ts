@@ -61,3 +61,13 @@ export function requireAuth(authorization?: string | null): SessionUser {
   }
   return user
 }
+
+// Helper to extract auth from NextRequest headers or cookies
+import type { NextRequest } from 'next/server'
+export function requireAuthFromRequest(req: NextRequest): SessionUser {
+  const header = req.headers.get('authorization')
+  // Try cookie fallback
+  const cookie = (req as any).cookies?.get?.('auth_token')?.value || null
+  const auth = header || (cookie ? `Bearer ${cookie}` : null)
+  return requireAuth(auth)
+}

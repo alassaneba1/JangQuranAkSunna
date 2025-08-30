@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAuth } from '../../_lib/session'
+import { requireAuthFromRequest } from '../../_lib/session'
 import { buildPagination } from '../_lib/paginate'
 import { User, UserRole, UserStatus } from '@/types'
 
@@ -20,7 +20,7 @@ function sanitize(user: User) {
 
 export async function GET(req: NextRequest) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const { searchParams } = new URL(req.url)
     const page = searchParams.get('page')
     const size = searchParams.get('size')
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const body = await req.json().catch(() => ({}))
     const { email, name, roles, lang, status } = body || {}
     if (!email || typeof email !== 'string') {

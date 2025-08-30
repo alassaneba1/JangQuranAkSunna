@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAuth } from '../../../_lib/session'
+import { requireAuthFromRequest } from '../../../_lib/session'
 import { getContent, updateContent } from '../../_lib/db'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const id = parseInt(params.id, 10)
     const c = getContent(id)
     if (!c) return NextResponse.json({ message: 'Not found' }, { status: 404 })
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const id = parseInt(params.id, 10)
     const body = await req.json().catch(() => ({}))
     const updated = updateContent(id, body)

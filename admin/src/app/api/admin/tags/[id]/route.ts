@@ -4,7 +4,7 @@ import { deleteTag, listTags, updateTag } from '../../../_lib/db'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const id = parseInt(params.id, 10)
     const item = listTags({}).find(t => (t as any).id === id)
     if (!item) return NextResponse.json({ data: null, success: false, message: 'Introuvable', timestamp: new Date().toISOString() }, { status: 404 })
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const id = parseInt(params.id, 10)
     const body = await req.json().catch(() => ({}))
     const item = updateTag(id, body || {})
@@ -29,7 +29,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const id = parseInt(params.id, 10)
     const ok = deleteTag(id)
     if (!ok) return NextResponse.json({ data: null, success: false, message: 'Introuvable', timestamp: new Date().toISOString() }, { status: 404 })

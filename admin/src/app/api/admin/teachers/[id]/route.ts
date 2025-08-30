@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAuth } from '../../../_lib/session'
+import { requireAuthFromRequest } from '../../../_lib/session'
 import { updateTeacher } from '../../_lib/db'
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const body = await req.json().catch(() => ({}))
     const id = parseInt(params.id, 10)
     const updated = updateTeacher(id, body)
@@ -20,7 +20,7 @@ export const PUT = PATCH
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const id = parseInt(params.id, 10)
     const res = updateTeacher(id, { status: 'INACTIVE' as any })
     if (!res) return NextResponse.json({ message: 'Not found' }, { status: 404 })

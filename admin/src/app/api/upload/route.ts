@@ -4,7 +4,7 @@ import { saveFile, buildUrl } from '../_lib/uploads'
 
 export async function POST(req: NextRequest) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const form = await req.formData()
     const file = form.get('file') as File | null
     if (!file) return NextResponse.json({ success: false, message: 'file requis' }, { status: 400 })

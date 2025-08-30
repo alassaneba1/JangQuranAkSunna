@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAuth } from '../../../../_lib/session'
+import { requireAuthFromRequest } from '../../../../_lib/session'
 import { User, UserStatus } from '@/types'
 
 const g = globalThis as any
@@ -10,7 +10,7 @@ const store: { seq: number; items: User[] } = g.__JQS_USERS__
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    requireAuth(req.headers.get('authorization'))
+    requireAuthFromRequest(req)
     const id = parseInt(params.id, 10)
     const idx = store.items.findIndex(u => u.id === id)
     if (idx === -1) return NextResponse.json({ data: null, success: false, message: 'Introuvable', timestamp: new Date().toISOString() }, { status: 404 })

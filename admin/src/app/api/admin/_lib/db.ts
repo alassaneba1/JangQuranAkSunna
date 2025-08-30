@@ -148,13 +148,14 @@ export function seedIfEmpty() {
   }
 }
 
-export function listTeachers({ page = 1, size = 10, q, verified }: { page?: number; size?: number; q?: string | null; verified?: string | null }) {
+export function listTeachers({ page = 1, size = 10, q, verified, lang }: { page?: number; size?: number; q?: string | null; verified?: string | null; lang?: string | null }) {
   seedIfEmpty()
   const term = (q || '').toLowerCase().trim()
   let items = [...store.TEACHERS]
   if (term) items = items.filter(t => t.displayName.toLowerCase().includes(term) || (t.bio || '').toLowerCase().includes(term))
   if (verified === 'true') items = items.filter(t => t.verified)
   if (verified === 'false') items = items.filter(t => !t.verified)
+  if (lang) items = items.filter(t => t.languages?.includes(lang))
   const total = items.length
   const start = (page - 1) * size
   const data = items.slice(start, start + size)

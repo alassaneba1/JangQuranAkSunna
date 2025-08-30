@@ -115,17 +115,17 @@ export default function ContentsPage() {
           <div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
             <input className="form-input md:flex-1" placeholder="Rechercher un contenu" value={q} onChange={e=>{setPage(1);setQ(e.target.value); router.replace(`/contents?q=${encodeURIComponent(e.target.value)}`)}} />
             <select className="form-select w-full md:w-40" value={type} onChange={e=>{setPage(1);setType(e.target.value as any)}}>
-              <option value="ALL">Tous</option>
-              <option value="AUDIO">Audio</option>
-              <option value="VIDEO">Vidéo</option>
-              <option value="PDF">PDF</option>
-              <option value="TEXT">Texte</option>
+              <option value="ALL">Tous{facets?` (${(facets.byType||[]).reduce((a:any,b:any)=>a+b.count,0)})`:''}</option>
+              <option value="AUDIO">Audio{facets?` (${facets.byType?.find((x:any)=>x.type==='AUDIO')?.count||0})`:''}</option>
+              <option value="VIDEO">Vidéo{facets?` (${facets.byType?.find((x:any)=>x.type==='VIDEO')?.count||0})`:''}</option>
+              <option value="PDF">PDF{facets?` (${facets.byType?.find((x:any)=>x.type==='PDF')?.count||0})`:''}</option>
+              <option value="TEXT">Texte{facets?` (${facets.byType?.find((x:any)=>x.type==='TEXT')?.count||0})`:''}</option>
             </select>
             <select className="form-select w-full md:w-32" value={lang} onChange={e=>{setPage(1);setLang(e.target.value as any)}}>
               <option value="ALL">Langues</option>
-              <option value="fr">Français</option>
-              <option value="wo">Wolof</option>
-              <option value="ar">Arabe</option>
+              <option value="fr">Français{facets?` (${facets.byLang?.find((x:any)=>x.lang==='fr')?.count||0})`:''}</option>
+              <option value="wo">Wolof{facets?` (${facets.byLang?.find((x:any)=>x.lang==='wo')?.count||0})`:''}</option>
+              <option value="ar">Arabe{facets?` (${facets.byLang?.find((x:any)=>x.lang==='ar')?.count||0})`:''}</option>
             </select>
             <button className="btn btn-primary btn-sm" onClick={()=>setShowCreate(s=>!s)}>{showCreate? 'Fermer' : 'Nouveau contenu'}</button>
           </div>

@@ -50,7 +50,7 @@ const nextConfig = {
 
     // Add frame protection outside development to allow embedding in local preview
     if (process.env.NODE_ENV !== 'development') {
-      securityHeaders.unshift({ key: 'X-Frame-Options', value: 'DENY' })
+      securityHeaders.unshift({ key: 'X-Frame-Options', value: 'SAMEORIGIN' })
     }
 
     return [

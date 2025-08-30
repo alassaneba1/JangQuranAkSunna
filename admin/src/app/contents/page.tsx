@@ -67,7 +67,7 @@ export default function ContentsPage() {
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [showCreate, setShowCreate] = useState(false)
   const [creating, setCreating] = useState(false)
-  const [newItem, setNewItem] = useState({ title: '', type: 'AUDIO', lang: 'fr', url: '' } as any)
+  const [newItem, setNewItem] = useState({ title: '', type: 'AUDIO', lang: 'fr', url: '', filename: '' } as any)
 
   useEffect(() => { setQ(paramQ) }, [paramQ])
 

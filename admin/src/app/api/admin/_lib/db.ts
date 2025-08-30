@@ -310,3 +310,92 @@ export function updateMosque(id: number, patch: Partial<Mosque>) {
   store.MOSQUES[idx] = { ...store.MOSQUES[idx], ...patch, updatedAt: nowISO() }
   return store.MOSQUES[idx]
 }
+
+export function listThemes({ q }: { q?: string | null }) {
+  seedIfEmpty()
+  const term = (q || '').toLowerCase().trim()
+  let items = [...store.THEMES]
+  if (term) items = items.filter(t => t.name.toLowerCase().includes(term) || (t.description || '').toLowerCase().includes(term) || t.slug.toLowerCase().includes(term))
+  return items
+}
+
+export function createTheme(input: Partial<Theme>) {
+  const now = nowISO()
+  const t: Theme = {
+    id: store.themeIdSeq++,
+    name: input.name || 'Nouveau thème',
+    slug: input.slug || (input.name || 'nouveau-theme').toString().toLowerCase().replace(/\s+/g,'-'),
+    description: input.description,
+    parent: input.parent,
+    children: [],
+    displayOrder: typeof input.displayOrder === 'number' ? input.displayOrder : store.THEMES.length + 1,
+    iconName: input.iconName,
+    colorCode: input.colorCode,
+    imageUrl: input.imageUrl,
+    isFeatured: !!input.isFeatured,
+    isActive: input.isActive !== false,
+    contentCount: 0,
+    seriesCount: 0,
+    translations: input.translations,
+    aliases: input.aliases,
+    createdAt: now,
+    updatedAt: now,
+  }
+  store.THEMES.unshift(t)
+  return t
+}
+
+export function updateTheme(id: number, patch: Partial<Theme>) {
+  const idx = store.THEMES.findIndex(t => t.id === id)
+  if (idx === -1) return null
+  store.THEMES[idx] = { ...store.THEMES[idx], ...patch, updatedAt: nowISO() }
+  return store.THEMES[idx]
+}
+
+export function deleteTheme(id: number) {
+  const before = store.THEMES.length
+  store.THEMES = store.THEMES.filter(t => t.id !== id)
+  return store.THEMES.length < before
+}
+
+export function listTags({ q, type }: { q?: string | null; type?: string | null }) {
+  seedIfEmpty()
+  const term = (q || '').toLowerCase().trim()
+  let items = [...store.TAGS]
+  if (term) items = items.filter(t => t.name.toLowerCase().includes(term) || (t.description || '').toLowerCase().includes(term) || t.slug.toLowerCase().includes(term))
+  if (type) items = items.filter(t => (t as any).type === type)
+  return items
+}
+
+export function createTag(input: Partial<Tag>) {
+  const now = nowISO()
+  const t: Tag = {
+    id: store.tagIdSeq++,
+    name: input.name || 'Nouveau tag',
+    slug: input.slug || (input.name || 'nouveau-tag').toString().toLowerCase().replace(/\s+/g,'-'),
+    description: input.description,
+    type: (input.type as any) || TagType.TOPIC,
+    colorCode: input.colorCode,
+    isFeatured: !!input.isFeatured,
+    isActive: input.isActive !== false,
+    usageCount: 0,
+    aliases: input.aliases,
+    createdAt: now,
+    updatedAt: now,
+  }
+  store.TAGS.unshift(t)
+  return t
+}
+
+export function updateTag(id: number, patch: Partial<Tag>) {
+  const idx = store.TAGS.findIndex(t => t.id === id)
+  if (idx === -1) return null
+  store.TAGS[idx] = { ...store.TAGS[idx], ...patch, updatedAt: nowISO() }
+  return store.TAGS[idx]
+}
+
+export function deleteTag(id: number) {
+  const before = store.TAGS.length
+  store.TAGS = store.TAGS.filter(t => t.id !== id)
+  return store.TAGS.length < before
+}

@@ -77,12 +77,22 @@ export default function ContentsPage() {
 
   const pagination = data?.pagination
 
+  const uploadFile = async (file: File) => {
+    const fd = new FormData()
+    fd.append('file', file)
+    const token = (typeof window !== 'undefined') ? (localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token')) : null
+    const res = await fetch('/api/upload', { method: 'POST', headers: token ? { Authorization: `Bearer ${token}` } : undefined, body: fd })
+    if (!res.ok) throw new Error('upload failed')
+    const json = await res.json()
+    setNewItem((s: any) => ({ ...s, url: json.data.url, filename: json.data.filename }))
+  }
+
   const submitCreate = async () => {
     setCreating(true)
     try {
       await contentApi.createContent({ title: newItem.title, type: newItem.type, lang: newItem.lang, assets: newItem.url ? [{ id: 0, contentId: 0, kind: newItem.type === 'PDF' ? 'PDF' : (newItem.type === 'VIDEO' ? 'VIDEO_HIGH' : 'AUDIO_HIGH'), url: newItem.url, isEncrypted: false, isDefault: true, processingStatus: 'COMPLETED', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }] : [] })
       setShowCreate(false)
-      setNewItem({ title: '', type: 'AUDIO', lang: 'fr', url: '' })
+      setNewItem({ title: '', type: 'AUDIO', lang: 'fr', url: '', filename: '' })
       mutate()
     } finally { setCreating(false) }
   }

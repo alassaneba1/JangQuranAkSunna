@@ -1,9 +1,11 @@
 import { Content, ContentStatus, ContentType, Teacher, TeacherStatus } from '@/types'
 
-type Store = { teacherIdSeq: number; contentIdSeq: number; TEACHERS: Teacher[]; CONTENTS: Content[] }
+import type { Mosque } from '@/types'
+
+type Store = { teacherIdSeq: number; contentIdSeq: number; mosqueIdSeq: number; TEACHERS: Teacher[]; CONTENTS: Content[]; MOSQUES: Mosque[] }
 const g = globalThis as any
 if (!g.__JQS_DB) {
-  g.__JQS_DB = { teacherIdSeq: 1, contentIdSeq: 1, TEACHERS: [], CONTENTS: [] } as Store
+  g.__JQS_DB = { teacherIdSeq: 1, contentIdSeq: 1, mosqueIdSeq: 1, TEACHERS: [], CONTENTS: [], MOSQUES: [] } as Store
 }
 const store: Store = g.__JQS_DB as Store
 
@@ -42,6 +44,10 @@ export function seedIfEmpty() {
       updatedAt: nowISO(),
     }
     store.TEACHERS.push(t1, t2)
+  }
+  if (store.MOSQUES.length === 0) {
+    store.MOSQUES.push({ id: store.mosqueIdSeq++, name: 'Grande Mosquée de Dakar', city: 'Dakar', country: 'Sénégal', verified: true, status: 'ACTIVE' as any, services: [], languages: ['fr','wo'], followersCount: 0, contentCount: 0, eventsCount: 0, createdAt: nowISO(), updatedAt: nowISO() })
+    store.MOSQUES.push({ id: store.mosqueIdSeq++, name: 'Mosquée Al-Falah', city: 'Thiès', country: 'Sénégal', verified: false, status: 'PENDING' as any, services: [], languages: ['fr'], followersCount: 0, contentCount: 0, eventsCount: 0, createdAt: nowISO(), updatedAt: nowISO() })
   }
   if (store.CONTENTS.length === 0) {
     const teacher = store.TEACHERS[0]
@@ -172,7 +178,11 @@ export function listContents({ page = 1, size = 10, q, type, lang }: { page?: nu
   const total = items.length
   const start = (page - 1) * size
   const data = items.slice(start, start + size)
-  return { data, pagination: { page, size, total, totalPages: Math.ceil(total / size), hasNext: page * size < total, hasPrevious: page > 1 } }
+  const facets = {
+    byType: ['AUDIO','VIDEO','PDF','TEXT'].map(t => ({ type: t, count: store.CONTENTS.filter(c => (!term || c.title.toLowerCase().includes(term)) && c.type === (t as any)).length })),
+    byLang: ['fr','wo','ar'].map(l => ({ lang: l, count: store.CONTENTS.filter(c => (!term || c.title.toLowerCase().includes(term)) && c.lang === l).length })),
+  }
+  return { data, pagination: { page, size, total, totalPages: Math.ceil(total / size), hasNext: page * size < total, hasPrevious: page > 1 }, facets }
 }
 
 export function getContent(id: number) {
@@ -229,4 +239,65 @@ export function updateContent(id: number, patch: Partial<Content>) {
   if (idx === -1) return null
   store.CONTENTS[idx] = { ...store.CONTENTS[idx], ...patch, updatedAt: nowISO() }
   return store.CONTENTS[idx]
+}
+
+export function listMosques({ page = 1, size = 10, q, city, country }: { page?: number; size?: number; q?: string | null; city?: string | null; country?: string | null }) {
+  seedIfEmpty()
+  let items = [...store.MOSQUES]
+  const term = (q || '').toLowerCase().trim()
+  if (term) items = items.filter(m => m.name.toLowerCase().includes(term) || (m.city || '').toLowerCase().includes(term) || (m.country || '').toLowerCase().includes(term))
+  if (city) items = items.filter(m => m.city === city)
+  if (country) items = items.filter(m => m.country === country)
+  const total = items.length
+  const start = (page - 1) * size
+  const data = items.slice(start, start + size)
+  const cities = Array.from(new Set(store.MOSQUES.map(m => m.city))).sort()
+  const countries = Array.from(new Set(store.MOSQUES.map(m => m.country))).sort()
+  return { data, pagination: { page, size, total, totalPages: Math.ceil(total / size), hasNext: page * size < total, hasPrevious: page > 1 }, meta: { cities, countries } }
+}
+
+export function createMosque(input: Partial<Mosque>) {
+  const m: Mosque = {
+    id: store.mosqueIdSeq++,
+    name: input.name || 'Nouvelle mosquée',
+    description: input.description,
+    address: input.address,
+    city: input.city || '',
+    region: input.region,
+    country: input.country || '',
+    postalCode: input.postalCode,
+    latitude: input.latitude,
+    longitude: input.longitude,
+    phoneNumber: input.phoneNumber,
+    email: input.email,
+    websiteUrl: input.websiteUrl,
+    facebookPage: input.facebookPage,
+    instagramPage: input.instagramPage,
+    twitterPage: input.twitterPage,
+    imageUrl: input.imageUrl,
+    coverImageUrl: input.coverImageUrl,
+    foundedYear: input.foundedYear,
+    capacity: input.capacity,
+    imamName: input.imamName,
+    architecturalStyle: input.architecturalStyle,
+    verified: !!input.verified,
+    status: (input.status as any) || 'ACTIVE',
+    followersCount: 0,
+    contentCount: 0,
+    eventsCount: 0,
+    prayerTimes: input.prayerTimes,
+    services: input.services || [],
+    languages: input.languages || [],
+    createdAt: nowISO(),
+    updatedAt: nowISO(),
+  }
+  store.MOSQUES.unshift(m)
+  return m
+}
+
+export function updateMosque(id: number, patch: Partial<Mosque>) {
+  const idx = store.MOSQUES.findIndex(m => m.id === id)
+  if (idx === -1) return null
+  store.MOSQUES[idx] = { ...store.MOSQUES[idx], ...patch, updatedAt: nowISO() }
+  return store.MOSQUES[idx]
 }

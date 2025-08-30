@@ -142,7 +142,13 @@ export default function ContentsPage() {
                 <option value="wo">Wolof</option>
                 <option value="ar">Arabe</option>
               </select>
-              <input className="form-input md:col-span-4" placeholder="URL média (mp3/mp4/pdf) — optionnel" value={newItem.url} onChange={e=>setNewItem({ ...newItem, url: e.target.value })} />
+              <div className="md:col-span-4">
+                <label className="block text-sm font-medium mb-1">Fichier média (drag & drop ou parcourir)</label>
+                <div onDragOver={(e)=>e.preventDefault()} onDrop={(e)=>{e.preventDefault(); if (e.dataTransfer.files?.[0]) uploadFile(e.dataTransfer.files[0])}} className="border border-dashed rounded p-4 text-sm text-gray-600 flex flex-col items-center justify-center gap-2">
+                  <input type="file" accept={newItem.type === 'PDF' ? 'application/pdf' : (newItem.type === 'VIDEO' ? 'video/*' : 'audio/*')} onChange={(e)=>{ const f = e.target.files?.[0]; if (f) uploadFile(f) }} />
+                  {newItem.filename || newItem.url ? <div className="text-green-600">Fichier prêt: {newItem.filename || newItem.url}</div> : <div>Glissez un fichier ici ou sélectionnez-en un</div>}
+                </div>
+              </div>
               <div className="md:col-span-4 flex justify-end">
                 <button className="btn btn-primary btn-sm" onClick={submitCreate} disabled={creating || !newItem.title}>Créer</button>
               </div>

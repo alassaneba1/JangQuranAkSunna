@@ -9,11 +9,12 @@ import { Badge } from '@/components/ui/badge'
 export default function TeachersPage() {
   const [q, setQ] = useState('')
   const [verified, setVerified] = useState<'all' | 'true' | 'false'>('all')
+  const [lang, setLang] = useState<'ALL'|'fr'|'wo'|'ar'>('ALL')
   const [page, setPage] = useState(1)
   const size = 10
 
-  const key = useMemo(() => `teachers:list:${page}:${size}:${q}:${verified}`,[page,size,q,verified])
-  const fetcher = async () => teachersApi.getTeachers({ page, size, q: q || undefined, verified: verified === 'all' ? undefined : verified })
+  const key = useMemo(() => `teachers:list:${page}:${size}:${q}:${verified}:${lang}`,[page,size,q,verified,lang])
+  const fetcher = async () => teachersApi.getTeachers({ page, size, q: q || undefined, verified: verified === 'all' ? undefined : verified, lang: lang==='ALL'?undefined:lang })
   const { data, error, isLoading } = useSWR(key, fetcher)
 
   const pagination = data?.pagination

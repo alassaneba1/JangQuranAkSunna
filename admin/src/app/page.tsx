@@ -3,12 +3,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
   Users,
-  BookOpen,
   Building,
   Video,
   TrendingUp,
@@ -127,10 +127,8 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-white" />
-                </div>
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg overflow-hidden bg-white flex items-center justify-center">
+                <Image src="https://cdn.builder.io/api/v1/image/assets%2Fed31a7480dc3437884fa527b0613263d%2F9899c54da1084b57874bf07e673f757f?format=webp&width=80" alt="JangQuranAkSunna" width={40} height={40} priority />
               </div>
               <div className="ml-4">
                 <h1 className="text-2xl font-bold text-gray-900">JangQuranAkSunna</h1>
@@ -147,7 +145,8 @@ export default function DashboardPage() {
                   day: 'numeric'
                 }) : ''}
               </Badge>
-              <Button>
+              <Button className="flex items-center gap-2">
+                <Image src="https://cdn.builder.io/api/v1/image/assets%2Fed31a7480dc3437884fa527b0613263d%2F9899c54da1084b57874bf07e673f757f?format=webp&width=40" alt="Logo" width={16} height={16} />
                 Voir l'application
               </Button>
             </div>

@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { authApi } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import Image from 'next/image'
 
 const schema = z.object({
   email: z.string().email('Email invalide'),

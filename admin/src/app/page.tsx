@@ -146,7 +146,6 @@ export default function DashboardPage() {
                 }) : ''}
               </Badge>
               <Button className="flex items-center gap-2">
-                <Image src="https://cdn.builder.io/api/v1/image/assets%2Fed31a7480dc3437884fa527b0613263d%2F9899c54da1084b57874bf07e673f757f?format=webp&width=40" alt="Logo" width={16} height={16} />
                 Voir l'application
               </Button>
             </div>

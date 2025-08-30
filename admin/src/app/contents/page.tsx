@@ -20,7 +20,8 @@ function PDFPreview({ url }: { url?: string }) {
         return
       }
       try {
-        const res = await fetch(`/api/proxy?url=${encodeURIComponent(url)}`)
+        const isSameOrigin = url.startsWith('/')
+        const res = await fetch(isSameOrigin ? url : `/api/proxy?url=${encodeURIComponent(url)}`)
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const blob = await res.blob()
         if (!active) return

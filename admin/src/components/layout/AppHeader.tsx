@@ -14,6 +14,8 @@ const links = [
   { href: '/contents', label: 'Contenus' },
   { href: '/teachers', label: 'Enseignants' },
   { href: '/mosques', label: 'Mosquées' },
+  { href: '/themes', label: 'Thèmes' },
+  { href: '/tags', label: 'Tags' },
   { href: '/users', label: 'Utilisateurs' },
 ]
 

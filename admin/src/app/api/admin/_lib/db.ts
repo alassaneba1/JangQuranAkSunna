@@ -2,10 +2,10 @@ import { Content, ContentStatus, ContentType, Teacher, TeacherStatus, TagType } 
 
 import type { Mosque, Theme, Tag } from '@/types'
 
-type Store = { teacherIdSeq: number; contentIdSeq: number; mosqueIdSeq: number; TEACHERS: Teacher[]; CONTENTS: Content[]; MOSQUES: Mosque[] }
+type Store = { teacherIdSeq: number; contentIdSeq: number; mosqueIdSeq: number; themeIdSeq: number; tagIdSeq: number; TEACHERS: Teacher[]; CONTENTS: Content[]; MOSQUES: Mosque[]; THEMES: Theme[]; TAGS: Tag[] }
 const g = globalThis as any
 if (!g.__JQS_DB) {
-  g.__JQS_DB = { teacherIdSeq: 1, contentIdSeq: 1, mosqueIdSeq: 1, TEACHERS: [], CONTENTS: [], MOSQUES: [] } as Store
+  g.__JQS_DB = { teacherIdSeq: 1, contentIdSeq: 1, mosqueIdSeq: 1, themeIdSeq: 1, tagIdSeq: 1, TEACHERS: [], CONTENTS: [], MOSQUES: [], THEMES: [], TAGS: [] } as Store
 }
 const store: Store = g.__JQS_DB as Store
 

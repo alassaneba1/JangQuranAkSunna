@@ -5,6 +5,54 @@ import useSWR from 'swr'
 import { contentApi } from '@/lib/api'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 
+function PDFPreview({ url }: { url?: string }) {
+  const [blobUrl, setBlobUrl] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let active = true
+    async function run() {
+      setError(null)
+      setBlobUrl(null)
+      if (!url) {
+        setError('URL manquante')
+        return
+      }
+      try {
+        const res = await fetch(`/api/proxy?url=${encodeURIComponent(url)}`)
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        const blob = await res.blob()
+        if (!active) return
+        const objectUrl = URL.createObjectURL(blob)
+        setBlobUrl(objectUrl)
+      } catch (e: any) {
+        if (!active) return
+        setError('Impossible de charger le PDF')
+      }
+    }
+    run()
+    return () => {
+      active = false
+      if (blobUrl) URL.revokeObjectURL(blobUrl)
+    }
+  }, [url])
+
+  if (error) {
+    return (
+      <div className="space-y-2">
+        <div className="text-red-600 text-sm">{error}</div>
+        {url && (
+          <a className="btn btn-outline btn-sm" href={url} target="_blank" rel="noreferrer noopener">
+            Ouvrir dans un nouvel onglet
+          </a>
+        )}
+      </div>
+    )
+  }
+  if (!blobUrl) return <div>Chargement du PDF…</div>
+  return <iframe className="w-full h-96 border" src={blobUrl} />
+}
+
 export default function ContentsPage() {
   const [q, setQ] = useState('')
   const [type, setType] = useState<'ALL' | 'AUDIO' | 'VIDEO' | 'PDF' | 'TEXT'>('ALL')

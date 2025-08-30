@@ -62,7 +62,6 @@ export default function AppHeader() {
             <form onSubmit={submitSearch} className="hidden md:block">
               <input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Rechercher…" className="form-input w-64" />
             </form>
-            <a className="btn btn-outline btn-sm hidden md:inline-flex" href="https://github.com/alassaneba1/JangQuranAkSunna/pull/7" target="_blank" rel="noreferrer">Ouvrir la PR</a>
             <Button variant="outline" onClick={logout}>
               <LogOut className="w-4 h-4 mr-2" />
               Déconnexion

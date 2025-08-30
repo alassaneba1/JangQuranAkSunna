@@ -69,8 +69,8 @@ export default function AppHeader() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-              <BookOpen className="w-5 h-5 text-white" />
+            <div className="w-9 h-9 rounded-lg overflow-hidden bg-white flex items-center justify-center">
+              <Image src="https://cdn.builder.io/api/v1/image/assets%2Fed31a7480dc3437884fa527b0613263d%2F9899c54da1084b57874bf07e673f757f?format=webp&width=80" alt="JangQuranAkSunna" width={36} height={36} priority />
             </div>
             <nav className="flex items-center gap-4 text-sm">
               {links.map((l) => (

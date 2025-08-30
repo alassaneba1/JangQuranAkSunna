@@ -64,9 +64,12 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Connexion</CardTitle>
-          <CardDescription>Accédez à l'interface d'administration</CardDescription>
+        <CardHeader className="flex items-center gap-2">
+          <Image src="https://cdn.builder.io/api/v1/image/assets%2Fed31a7480dc3437884fa527b0613263d%2F9899c54da1084b57874bf07e673f757f?format=webp&width=80" alt="JangQuranAkSunna" width={48} height={48} />
+          <div>
+            <CardTitle>Connexion</CardTitle>
+            <CardDescription>Accédez à l'interface d'administration</CardDescription>
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

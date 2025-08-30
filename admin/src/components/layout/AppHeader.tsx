@@ -84,9 +84,23 @@ export default function AppHeader() {
             </nav>
           </div>
           <div className="flex items-center gap-3">
-            <form onSubmit={submitSearch} className="hidden md:block">
-              <input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Rechercher…" className="form-input w-64" />
-            </form>
+            <div className="hidden md:block relative" ref={boxRef}>
+              <form onSubmit={submitSearch}>
+                <input value={query} onChange={(e)=>{setQuery(e.target.value); setOpen(true)}} placeholder="Rechercher…" className="form-input w-64" />
+              </form>
+              {open && (sugs.contentTitles.length>0 || sugs.teacherNames.length>0) && (
+                <div className="absolute z-10 mt-1 w-72 bg-white border rounded shadow">
+                  <div className="p-2 text-xs text-gray-500">Suggestions</div>
+                  {sugs.contentTitles.map((t)=> (
+                    <button key={t} className="block w-full text-left px-3 py-1 hover:bg-gray-50" onClick={()=>{setQuery(t); router.push(`/contents?q=${encodeURIComponent(t)}`); setOpen(false)}}>{t}</button>
+                  ))}
+                  {sugs.teacherNames.length>0 && <div className="px-3 py-1 text-xs text-gray-400">Enseignants</div>}
+                  {sugs.teacherNames.map((t)=> (
+                    <button key={t} className="block w-full text-left px-3 py-1 hover:bg-gray-50" onClick={()=>{setQuery(t); router.push(`/teachers?q=${encodeURIComponent(t)}`); setOpen(false)}}>{t}</button>
+                  ))}
+                </div>
+              )}
+            </div>
             <Button variant="outline" onClick={logout}>
               <LogOut className="w-4 h-4 mr-2" />
               Déconnexion

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth } from '../../_lib/session'
-import { listContents } from '../_lib/db'
+import { listContents, createContent } from '../_lib/db'
 
 export async function GET(req: NextRequest) {
   try {
@@ -16,5 +16,17 @@ export async function GET(req: NextRequest) {
   } catch (e: any) {
     const status = e?.status || 401
     return NextResponse.json({ data: [], pagination: { page: 1, size: 10, total: 0, totalPages: 0, hasNext: false, hasPrevious: false } }, { status })
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    requireAuth(req.headers.get('authorization'))
+    const body = await req.json().catch(() => ({}))
+    const created = createContent(body)
+    return NextResponse.json({ data: created, success: true, message: 'OK', timestamp: new Date().toISOString() })
+  } catch (e: any) {
+    const status = e?.status || 500
+    return NextResponse.json({ data: null, success: false, message: 'Erreur', timestamp: new Date().toISOString() }, { status })
   }
 }

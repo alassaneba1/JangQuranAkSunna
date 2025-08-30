@@ -30,6 +30,14 @@ export default function AppHeader() {
 
   if (pathname === '/login') return null
 
+  const [query, setQuery] = useState('')
+  const submitSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!query) return
+    router.push(`/contents?q=${encodeURIComponent(query)}`)
+    setQuery('')
+  }
+
   return (
     <header className="bg-white border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,10 +58,16 @@ export default function AppHeader() {
               ))}
             </nav>
           </div>
-          <Button variant="outline" onClick={logout}>
-            <LogOut className="w-4 h-4 mr-2" />
-            Déconnexion
-          </Button>
+          <div className="flex items-center gap-3">
+            <form onSubmit={submitSearch} className="hidden md:block">
+              <input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Rechercher…" className="form-input w-64" />
+            </form>
+            <a className="btn btn-outline btn-sm hidden md:inline-flex" href="https://github.com/alassaneba1/JangQuranAkSunna/pull/7" target="_blank" rel="noreferrer">Ouvrir la PR</a>
+            <Button variant="outline" onClick={logout}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Déconnexion
+            </Button>
+          </div>
         </div>
       </div>
     </header>

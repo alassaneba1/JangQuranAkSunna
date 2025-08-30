@@ -10,7 +10,8 @@ export async function GET(req: NextRequest) {
     const size = Math.max(1, Math.min(100, parseInt(searchParams.get('size') || '10', 10)))
     const q = searchParams.get('q')
     const verified = searchParams.get('verified')
-    const res = listTeachers({ page, size, q, verified })
+    const lang = searchParams.get('lang')
+    const res = listTeachers({ page, size, q, verified, lang: lang as any })
     return NextResponse.json(res)
   } catch (e: any) {
     const status = e?.status || 401

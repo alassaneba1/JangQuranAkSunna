@@ -1,6 +1,6 @@
-import { Content, ContentStatus, ContentType, Teacher, TeacherStatus } from '@/types'
+import { Content, ContentStatus, ContentType, Teacher, TeacherStatus, TagType } from '@/types'
 
-import type { Mosque } from '@/types'
+import type { Mosque, Theme, Tag } from '@/types'
 
 type Store = { teacherIdSeq: number; contentIdSeq: number; mosqueIdSeq: number; TEACHERS: Teacher[]; CONTENTS: Content[]; MOSQUES: Mosque[] }
 const g = globalThis as any

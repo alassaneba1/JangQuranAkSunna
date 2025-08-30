@@ -25,12 +25,16 @@ const nextConfig = {
     ],
   },
   async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/:path*`,
-      },
-    ];
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (apiUrl && apiUrl.trim().length > 0) {
+      return [
+        {
+          source: '/api/:path*',
+          destination: `${apiUrl}/:path*`,
+        },
+      ];
+    }
+    return [];
   },
   async headers() {
     const securityHeaders = [
